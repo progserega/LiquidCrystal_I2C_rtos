@@ -2,9 +2,9 @@
 #ifndef LiquidCrystal_I2C_h
 #define LiquidCrystal_I2C_h
 
+#include "i2c_user.h"
+#include <unistd.h>
 #include <inttypes.h>
-#include "Print.h" 
-#include <Wire.h>
 
 // commands
 #define LCD_CLEARDISPLAY 0x01
@@ -48,84 +48,70 @@
 #define LCD_BACKLIGHT 0x08
 #define LCD_NOBACKLIGHT 0x00
 
-#define En B00000100  // Enable bit
-#define Rw B00000010  // Read/Write bit
-#define Rs B00000001  // Register select bit
+// тактируемый бит (1 - запись полубайта, 0 - повтор полубайта. Т.е. полубайт посылается дважды, а экрон принимает полубайт при смене E-бита с 1 на 0)
+#define En 0B00000100  // Enable bit
+#define Rw 0B00000010  // Read/Write bit (1 - пишем в экран, 0 - читаем из экрана)
+#define Rs 0B00000001  // Register select bit (1 - данные, 0 - команда управления экраном)
 
-class LiquidCrystal_I2C : public Print {
-public:
-  LiquidCrystal_I2C(uint8_t lcd_Addr,uint8_t lcd_cols,uint8_t lcd_rows);
-  void begin(uint8_t cols, uint8_t rows, uint8_t charsize = LCD_5x8DOTS );
-  void clear();
-  void home();
-  void noDisplay();
-  void display();
-  void noBlink();
-  void blink();
-  void noCursor();
-  void cursor();
-  void scrollDisplayLeft();
-  void scrollDisplayRight();
-  void printLeft();
-  void printRight();
-  void leftToRight();
-  void rightToLeft();
-  void shiftIncrement();
-  void shiftDecrement();
-  void noBacklight();
-  void backlight();
-  void autoscroll();
-  void noAutoscroll(); 
-  void createChar(uint8_t, uint8_t[]);
-  void createChar(uint8_t location, const char *charmap);
-  // Example: 	const char bell[8] PROGMEM = {B00100,B01110,B01110,B01110,B11111,B00000,B00100,B00000};
-  
-  void setCursor(uint8_t, uint8_t); 
-#if defined(ARDUINO) && ARDUINO >= 100
-  virtual size_t write(uint8_t);
-#else
-  virtual void write(uint8_t);
-#endif
-  void command(uint8_t);
-  void init();
-  void oled_init();
-
-////compatibility API function aliases
-void blink_on();						// alias for blink()
-void blink_off();       					// alias for noBlink()
-void cursor_on();      	 					// alias for cursor()
-void cursor_off();      					// alias for noCursor()
-void setBacklight(uint8_t new_val);				// alias for backlight() and nobacklight()
-void load_custom_character(uint8_t char_num, uint8_t *rows);	// alias for createChar()
-void printstr(const char[]);
-
-////Unsupported API functions (not implemented in this library)
-uint8_t status();
-void setContrast(uint8_t new_val);
-uint8_t keypad();
-void setDelay(int,int);
-void on();
-void off();
-uint8_t init_bargraph(uint8_t graphtype);
-void draw_horizontal_graph(uint8_t row, uint8_t column, uint8_t len,  uint8_t pixel_col_end);
-void draw_vertical_graph(uint8_t row, uint8_t column, uint8_t len,  uint8_t pixel_col_end);
-	 
-
-private:
-  void init_priv();
-  void send(uint8_t, uint8_t);
-  void write4bits(uint8_t);
-  void expanderWrite(uint8_t);
-  void pulseEnable(uint8_t);
+typedef struct LiquidCrystal_I2C_Data
+{
   uint8_t _Addr;
   uint8_t _displayfunction;
   uint8_t _displaycontrol;
   uint8_t _displaymode;
   uint8_t _numlines;
-  bool _oled = false;
+  uint8_t _fontsize;
+  bool _oled;
   uint8_t _cols;
   uint8_t _rows;
   uint8_t _backlightval;
 };
+
+void lcd_init(struct LiquidCrystal_I2C_Data *data, uint8_t lcd_Addr,uint8_t lcd_cols,uint8_t lcd_rows, uint8_t fontsize);
+void lcd_begin(struct LiquidCrystal_I2C_Data *data, uint8_t cols, uint8_t lines, uint8_t dotsize);
+void lcd_clear(struct LiquidCrystal_I2C_Data *data);
+void lcd_home(struct LiquidCrystal_I2C_Data *data);
+void lcd_noDisplay(struct LiquidCrystal_I2C_Data *data);
+void lcd_display(struct LiquidCrystal_I2C_Data *data);
+void lcd_noBlink(struct LiquidCrystal_I2C_Data *data);
+void lcd_blink(struct LiquidCrystal_I2C_Data *data);
+void lcd_noCursor(struct LiquidCrystal_I2C_Data *data);
+void lcd_cursor(struct LiquidCrystal_I2C_Data *data);
+void lcd_scrollDisplayLeft(struct LiquidCrystal_I2C_Data *data);
+void lcd_scrollDisplayRight(struct LiquidCrystal_I2C_Data *data);
+void lcd_printLeft(struct LiquidCrystal_I2C_Data *data);
+void lcd_printRight(struct LiquidCrystal_I2C_Data *data);
+void lcd_leftToRight(struct LiquidCrystal_I2C_Data *data);
+void lcd_rightToLeft(struct LiquidCrystal_I2C_Data *data);
+void lcd_shiftIncrement(struct LiquidCrystal_I2C_Data *data);
+void lcd_shiftDecrement(struct LiquidCrystal_I2C_Data *data);
+void lcd_noBacklight(struct LiquidCrystal_I2C_Data *data);
+void lcd_backlight(struct LiquidCrystal_I2C_Data *data);
+void lcd_autoscroll(struct LiquidCrystal_I2C_Data *data);
+void lcd_noAutoscroll(struct LiquidCrystal_I2C_Data *data); 
+void lcd_createChar_from_uint8(struct LiquidCrystal_I2C_Data *data,uint8_t, uint8_t[]);
+void lcd_createChar_from_charmap(struct LiquidCrystal_I2C_Data *data,uint8_t location, const char *charmap);
+// Example: 	const char bell[8] PROGMEM = {B00100,B01110,B01110,B01110,B11111,B00000,B00100,B00000};
+
+void lcd_setCursor(struct LiquidCrystal_I2C_Data *data,uint8_t, uint8_t); 
+void lcd_write(struct LiquidCrystal_I2C_Data *data,uint8_t);
+void lcd_command(struct LiquidCrystal_I2C_Data *data,uint8_t);
+void lcd_oled_init(struct LiquidCrystal_I2C_Data *data);
+
+////compatibility API function aliases
+void lcd_blink_on(struct LiquidCrystal_I2C_Data *data);						// alias for blink(struct LiquidCrystal_I2C_Data *data)
+void lcd_blink_off(struct LiquidCrystal_I2C_Data *data);       					// alias for noBlink(struct LiquidCrystal_I2C_Data *data)
+void lcd_cursor_on(struct LiquidCrystal_I2C_Data *data);      	 					// alias for cursor(struct LiquidCrystal_I2C_Data *data)
+void lcd_cursor_off(struct LiquidCrystal_I2C_Data *data);      					// alias for noCursor(struct LiquidCrystal_I2C_Data *data)
+void lcd_setBacklight(struct LiquidCrystal_I2C_Data *data,uint8_t new_val);				// alias for backlight(struct LiquidCrystal_I2C_Data *data) and nobacklight(struct LiquidCrystal_I2C_Data *data)
+void lcd_load_custom_character(struct LiquidCrystal_I2C_Data *data,uint8_t char_num, uint8_t *rows);	// alias for createChar(struct LiquidCrystal_I2C_Data *data)
+void lcd_print(struct LiquidCrystal_I2C_Data *data,const char[]);
+
+void _lcd_init_priv(struct LiquidCrystal_I2C_Data *data);
+void _lcd_send(struct LiquidCrystal_I2C_Data *data,uint8_t, uint8_t);
+void _lcd_write4bits(struct LiquidCrystal_I2C_Data *data,uint8_t);
+void _lcd_expanderWrite(struct LiquidCrystal_I2C_Data *data,uint8_t);
+void _lcd_pulseEnable(struct LiquidCrystal_I2C_Data *data,uint8_t);
+
 
 #endif
