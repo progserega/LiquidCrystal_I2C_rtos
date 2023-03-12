@@ -2,7 +2,7 @@
 
 #include "LiquidCrystal_I2C.h"
 
-inline void lcd_write(struct LiquidCrystal_I2C_Data *data,uint8_t value) {
+inline void lcd_write(LiquidCrystal_I2C_Data *data,uint8_t value) {
 	_lcd_send(data,value, Rs);
 }
 
@@ -25,7 +25,7 @@ inline void lcd_write(struct LiquidCrystal_I2C_Data *data,uint8_t value) {
 // can't assume that its in that state when a sketch starts (and the
 // LiquidCrystal constructor is called).
 
-void lcd_init(struct LiquidCrystal_I2C_Data *data, uint8_t lcd_Addr,uint8_t lcd_cols,uint8_t lcd_rows, uint8_t fontsize)
+void lcd_init(LiquidCrystal_I2C_Data *data, uint8_t lcd_Addr,uint8_t lcd_cols,uint8_t lcd_rows, uint8_t fontsize)
 {
   data->_Addr = lcd_Addr;
   data->_cols = lcd_cols;
@@ -41,12 +41,12 @@ void lcd_init(struct LiquidCrystal_I2C_Data *data, uint8_t lcd_Addr,uint8_t lcd_
 	lcd_begin(data, lcd_cols, lcd_rows, fontsize);
 }
 
-void lcd_oled_on(struct LiquidCrystal_I2C_Data *data){
+void lcd_oled_on(LiquidCrystal_I2C_Data *data){
   data->_oled = true;
   lcd_begin(data,data->_cols, data->_rows, data->_fontsize);
 }
 
-void lcd_begin(struct LiquidCrystal_I2C_Data *data, uint8_t cols, uint8_t lines, uint8_t dotsize) {
+void lcd_begin(LiquidCrystal_I2C_Data *data, uint8_t cols, uint8_t lines, uint8_t dotsize) {
 	if (lines > 1) {
 		data->_displayfunction |= LCD_2LINE;
 	}
@@ -106,18 +106,18 @@ void lcd_begin(struct LiquidCrystal_I2C_Data *data, uint8_t cols, uint8_t lines,
 }
 
 /********** high level lcd_commands, for the user! */
-void lcd_clear(struct LiquidCrystal_I2C_Data *data){
+void lcd_clear(LiquidCrystal_I2C_Data *data){
 	lcd_command(data,LCD_CLEARDISPLAY);// clear display, set cursor position to zero
 	usleep(2000);  // this lcd_command takes a long time!
   if (data->_oled) lcd_setCursor(data,0,0);
 }
 
-void lcd_home(struct LiquidCrystal_I2C_Data *data){
+void lcd_home(LiquidCrystal_I2C_Data *data){
 	lcd_command(data,LCD_RETURNHOME);  // set cursor position to zero
 	usleep(2000);  // this lcd_command takes a long time!
 }
 
-void lcd_setCursor(struct LiquidCrystal_I2C_Data *data,uint8_t col, uint8_t row){
+void lcd_setCursor(LiquidCrystal_I2C_Data *data,uint8_t col, uint8_t row){
 	int row_offsets[] = { 0x00, 0x40, 0x14, 0x54 };
 	if ( row > data->_numlines ) {
 		row = data->_numlines-1;    // we count rows starting w/0
@@ -126,71 +126,71 @@ void lcd_setCursor(struct LiquidCrystal_I2C_Data *data,uint8_t col, uint8_t row)
 }
 
 // Turn the display on/off (quickly)
-void lcd_noDisplay(struct LiquidCrystal_I2C_Data *data) {
+void lcd_noDisplay(LiquidCrystal_I2C_Data *data) {
 	data->_displaycontrol &= ~LCD_DISPLAYON;
 	lcd_command(data,LCD_DISPLAYCONTROL | data->_displaycontrol);
 }
-void lcd_display(struct LiquidCrystal_I2C_Data *data) {
+void lcd_display(LiquidCrystal_I2C_Data *data) {
 	data->_displaycontrol |= LCD_DISPLAYON;
 	lcd_command(data,LCD_DISPLAYCONTROL | data->_displaycontrol);
 }
 
 // Turns the underline cursor on/off
-void lcd_noCursor(struct LiquidCrystal_I2C_Data *data) {
+void lcd_noCursor(LiquidCrystal_I2C_Data *data) {
 	data->_displaycontrol &= ~LCD_CURSORON;
 	lcd_command(data,LCD_DISPLAYCONTROL | data->_displaycontrol);
 }
-void lcd_cursor(struct LiquidCrystal_I2C_Data *data) {
+void lcd_cursor(LiquidCrystal_I2C_Data *data) {
 	data->_displaycontrol |= LCD_CURSORON;
 	lcd_command(data,LCD_DISPLAYCONTROL | data->_displaycontrol);
 }
 
 // Turn on and off the blinking cursor
-void lcd_noBlink(struct LiquidCrystal_I2C_Data *data) {
+void lcd_noBlink(LiquidCrystal_I2C_Data *data) {
 	data->_displaycontrol &= ~LCD_BLINKON;
 	lcd_command(data,LCD_DISPLAYCONTROL | data->_displaycontrol);
 }
-void lcd_blink(struct LiquidCrystal_I2C_Data *data) {
+void lcd_blink(LiquidCrystal_I2C_Data *data) {
 	data->_displaycontrol |= LCD_BLINKON;
 	lcd_command(data,LCD_DISPLAYCONTROL | data->_displaycontrol);
 }
 
 // These lcd_commands scroll the display without changing the RAM
-void lcd_scrollDisplayLeft(struct LiquidCrystal_I2C_Data *data) {
+void lcd_scrollDisplayLeft(LiquidCrystal_I2C_Data *data) {
 	lcd_command(data,LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVELEFT);
 }
 
-void lcd_scrollDisplayRight(struct LiquidCrystal_I2C_Data *data) {
+void lcd_scrollDisplayRight(LiquidCrystal_I2C_Data *data) {
 	lcd_command(data,LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVERIGHT);
 }
 
 // This is for text that flows Left to Right
-void lcd_leftToRight(struct LiquidCrystal_I2C_Data *data) {
+void lcd_leftToRight(LiquidCrystal_I2C_Data *data) {
 	data->_displaymode |= LCD_ENTRYLEFT;
 	lcd_command(data,LCD_ENTRYMODESET | data->_displaymode);
 }
 
 // This is for text that flows Right to Left
-void lcd_rightToLeft(struct LiquidCrystal_I2C_Data *data) {
+void lcd_rightToLeft(LiquidCrystal_I2C_Data *data) {
 	data->_displaymode &= ~LCD_ENTRYLEFT;
 	lcd_command(data,LCD_ENTRYMODESET | data->_displaymode);
 }
 
 // This will 'right justify' text from the cursor
-void lcd_autoscroll(struct LiquidCrystal_I2C_Data *data) {
+void lcd_autoscroll(LiquidCrystal_I2C_Data *data) {
 	data->_displaymode |= LCD_ENTRYSHIFTINCREMENT;
 	lcd_command(data,LCD_ENTRYMODESET | data->_displaymode);
 }
 
 // This will 'left justify' text from the cursor
-void lcd_noAutoscroll(struct LiquidCrystal_I2C_Data *data) {
+void lcd_noAutoscroll(LiquidCrystal_I2C_Data *data) {
 	data->_displaymode &= ~LCD_ENTRYSHIFTINCREMENT;
 	lcd_command(data,LCD_ENTRYMODESET | data->_displaymode);
 }
 
 // Allows us to fill the first 8 CGRAM locations
 // with custom characters
-void lcd_createChar_from_uint8(struct LiquidCrystal_I2C_Data *data,uint8_t location, uint8_t charmap[]) {
+void lcd_createChar_from_uint8(LiquidCrystal_I2C_Data *data,uint8_t location, uint8_t charmap[]) {
 	location &= 0x7; // we only have 8 locations 0-7
 	lcd_command(data,LCD_SETCGRAMADDR | (location << 3));
 	for (int i=0; i<8; i++) {
@@ -199,7 +199,7 @@ void lcd_createChar_from_uint8(struct LiquidCrystal_I2C_Data *data,uint8_t locat
 }
 
 //createChar with PROGMEM input
-void lcd_createChar_from_charmap(struct LiquidCrystal_I2C_Data *data,uint8_t location, const char *charmap) {
+void lcd_createChar_from_charmap(LiquidCrystal_I2C_Data *data,uint8_t location, const char *charmap) {
 	location &= 0x7; // we only have 8 locations 0-7
 	lcd_command(data,LCD_SETCGRAMADDR | (location << 3));
   /* FIXME
@@ -209,12 +209,12 @@ void lcd_createChar_from_charmap(struct LiquidCrystal_I2C_Data *data,uint8_t loc
 }
 
 // Turn the (optional) backlight off/on
-void lcd_noBacklight(struct LiquidCrystal_I2C_Data *data) {
+void lcd_noBacklight(LiquidCrystal_I2C_Data *data) {
 	data->_backlightval=LCD_NOBACKLIGHT;
 	_lcd_expanderWrite(data,0);
 }
 
-void lcd_backlight(struct LiquidCrystal_I2C_Data *data) {
+void lcd_backlight(LiquidCrystal_I2C_Data *data) {
 	data->_backlightval=LCD_BACKLIGHT;
 	_lcd_expanderWrite(data,0);
 }
@@ -223,7 +223,7 @@ void lcd_backlight(struct LiquidCrystal_I2C_Data *data) {
 
 /*********** mid level lcd_commands, for sending data/cmds */
 //mode: 1 - data, 0 - command
-inline void lcd_command(struct LiquidCrystal_I2C_Data *data,uint8_t value) {
+inline void lcd_command(LiquidCrystal_I2C_Data *data,uint8_t value) {
 	_lcd_send(data, value, 0);
 }
 
@@ -232,14 +232,14 @@ inline void lcd_command(struct LiquidCrystal_I2C_Data *data,uint8_t value) {
 
 // write either lcd_command or data
 // 0
-void _lcd_send(struct LiquidCrystal_I2C_Data *data,uint8_t value, uint8_t mode) {
+void _lcd_send(LiquidCrystal_I2C_Data *data,uint8_t value, uint8_t mode) {
 	uint8_t highnib=value&0xf0;
 	uint8_t lownib=(value<<4)&0xf0;
   _lcd_write4bits(data,(highnib)|mode);
 	_lcd_write4bits(data,(lownib)|mode); 
 }
 
-void _lcd_write4bits(struct LiquidCrystal_I2C_Data *data,uint8_t value) {
+void _lcd_write4bits(LiquidCrystal_I2C_Data *data,uint8_t value) {
 	_lcd_expanderWrite(data,value);
 	_lcd_pulseEnable(data,value);
 }
@@ -250,11 +250,11 @@ void _lcd_write4bits(struct LiquidCrystal_I2C_Data *data,uint8_t value) {
 	Wire.endTransmission();   
 }
 */
-void _lcd_expanderWrite(struct LiquidCrystal_I2C_Data *data,uint8_t _data){
+void _lcd_expanderWrite(LiquidCrystal_I2C_Data *data,uint8_t _data){
   I2C_SendByteByADDR(_data|data->_backlightval,data->_Addr);
 }
 
-void _lcd_pulseEnable(struct LiquidCrystal_I2C_Data *data,uint8_t _data){
+void _lcd_pulseEnable(LiquidCrystal_I2C_Data *data,uint8_t _data){
 	_lcd_expanderWrite(data,_data | En);	// En high
 	usleep(1);		// enable pulse must be >450ns
 	
@@ -264,27 +264,27 @@ void _lcd_pulseEnable(struct LiquidCrystal_I2C_Data *data,uint8_t _data){
 
 
 // Alias functions
-void lcd_cursor_on(struct LiquidCrystal_I2C_Data *data){
+void lcd_cursor_on(LiquidCrystal_I2C_Data *data){
 	lcd_cursor(data);
 }
 
-void lcd_cursor_off(struct LiquidCrystal_I2C_Data *data){
+void lcd_cursor_off(LiquidCrystal_I2C_Data *data){
 	lcd_noCursor(data);
 }
 
-void lcd_blink_on(struct LiquidCrystal_I2C_Data *data){
+void lcd_blink_on(LiquidCrystal_I2C_Data *data){
 	lcd_blink(data);
 }
 
-void lcd_blink_off(struct LiquidCrystal_I2C_Data *data){
+void lcd_blink_off(LiquidCrystal_I2C_Data *data){
 	lcd_noBlink(data);
 }
 
-void lcd_load_custom_character(struct LiquidCrystal_I2C_Data *data,uint8_t char_num, uint8_t *rows){
+void lcd_load_custom_character(LiquidCrystal_I2C_Data *data,uint8_t char_num, uint8_t *rows){
 		lcd_createChar_from_uint8(data,char_num, rows);
 }
 
-void lcd_setBacklight(struct LiquidCrystal_I2C_Data *data,uint8_t new_val){
+void lcd_setBacklight(LiquidCrystal_I2C_Data *data,uint8_t new_val){
 	if(new_val){
 		lcd_backlight(data);		// turn backlight on
 	}else{
@@ -292,7 +292,7 @@ void lcd_setBacklight(struct LiquidCrystal_I2C_Data *data,uint8_t new_val){
 	}
 }
 
-void lcd_print(struct LiquidCrystal_I2C_Data *data,const char *st){
+void lcd_print(LiquidCrystal_I2C_Data *data,const char *st){
   uint8_t i=0;
   while(st[i]!=0)
   {
@@ -305,14 +305,14 @@ void lcd_print(struct LiquidCrystal_I2C_Data *data,const char *st){
 // unsupported API functions
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
-void lcd_off(struct LiquidCrystal_I2C_Data *data){}
-void lcd_on(struct LiquidCrystal_I2C_Data *data){}
-void lcd_setDelay (struct LiquidCrystal_I2C_Data *data,int cmdDelay,int charDelay) {}
-uint8_t lcd_status(struct LiquidCrystal_I2C_Data *data){return 0;}
-uint8_t lcd_keypad (struct LiquidCrystal_I2C_Data *data){return 0;}
-uint8_t lcd_init_bargraph(struct LiquidCrystal_I2C_Data *data,uint8_t graphtype){return 0;}
-void lcd_draw_horizontal_graph(struct LiquidCrystal_I2C_Data *data,uint8_t row, uint8_t column, uint8_t len,  uint8_t pixel_col_end){}
-void lcd_draw_vertical_graph(struct LiquidCrystal_I2C_Data *data,uint8_t row, uint8_t column, uint8_t len,  uint8_t pixel_row_end){}
-void lcd_setContrast(struct LiquidCrystal_I2C_Data *data,uint8_t new_val){}
+void lcd_off(LiquidCrystal_I2C_Data *data){}
+void lcd_on(LiquidCrystal_I2C_Data *data){}
+void lcd_setDelay (LiquidCrystal_I2C_Data *data,int cmdDelay,int charDelay) {}
+uint8_t lcd_status(LiquidCrystal_I2C_Data *data){return 0;}
+uint8_t lcd_keypad (LiquidCrystal_I2C_Data *data){return 0;}
+uint8_t lcd_init_bargraph(LiquidCrystal_I2C_Data *data,uint8_t graphtype){return 0;}
+void lcd_draw_horizontal_graph(LiquidCrystal_I2C_Data *data,uint8_t row, uint8_t column, uint8_t len,  uint8_t pixel_col_end){}
+void lcd_draw_vertical_graph(LiquidCrystal_I2C_Data *data,uint8_t row, uint8_t column, uint8_t len,  uint8_t pixel_row_end){}
+void lcd_setContrast(LiquidCrystal_I2C_Data *data,uint8_t new_val){}
 #pragma GCC diagnostic pop
 	

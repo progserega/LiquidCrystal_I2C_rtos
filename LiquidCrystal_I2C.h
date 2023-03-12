@@ -53,7 +53,7 @@
 #define Rw 0B00000010  // Read/Write bit (1 - пишем в экран, 0 - читаем из экрана)
 #define Rs 0B00000001  // Register select bit (1 - данные, 0 - команда управления экраном)
 
-typedef struct LiquidCrystal_I2C_Data
+typedef struct 
 {
   uint8_t _Addr;
   uint8_t _displayfunction;
@@ -65,53 +65,53 @@ typedef struct LiquidCrystal_I2C_Data
   uint8_t _cols;
   uint8_t _rows;
   uint8_t _backlightval;
-};
+} LiquidCrystal_I2C_Data;
 
-void lcd_init(struct LiquidCrystal_I2C_Data *data, uint8_t lcd_Addr,uint8_t lcd_cols,uint8_t lcd_rows, uint8_t fontsize);
-void lcd_begin(struct LiquidCrystal_I2C_Data *data, uint8_t cols, uint8_t lines, uint8_t dotsize);
-void lcd_clear(struct LiquidCrystal_I2C_Data *data);
-void lcd_home(struct LiquidCrystal_I2C_Data *data);
-void lcd_noDisplay(struct LiquidCrystal_I2C_Data *data);
-void lcd_display(struct LiquidCrystal_I2C_Data *data);
-void lcd_noBlink(struct LiquidCrystal_I2C_Data *data);
-void lcd_blink(struct LiquidCrystal_I2C_Data *data);
-void lcd_noCursor(struct LiquidCrystal_I2C_Data *data);
-void lcd_cursor(struct LiquidCrystal_I2C_Data *data);
-void lcd_scrollDisplayLeft(struct LiquidCrystal_I2C_Data *data);
-void lcd_scrollDisplayRight(struct LiquidCrystal_I2C_Data *data);
-void lcd_printLeft(struct LiquidCrystal_I2C_Data *data);
-void lcd_printRight(struct LiquidCrystal_I2C_Data *data);
-void lcd_leftToRight(struct LiquidCrystal_I2C_Data *data);
-void lcd_rightToLeft(struct LiquidCrystal_I2C_Data *data);
-void lcd_shiftIncrement(struct LiquidCrystal_I2C_Data *data);
-void lcd_shiftDecrement(struct LiquidCrystal_I2C_Data *data);
-void lcd_noBacklight(struct LiquidCrystal_I2C_Data *data);
-void lcd_backlight(struct LiquidCrystal_I2C_Data *data);
-void lcd_autoscroll(struct LiquidCrystal_I2C_Data *data);
-void lcd_noAutoscroll(struct LiquidCrystal_I2C_Data *data); 
-void lcd_createChar_from_uint8(struct LiquidCrystal_I2C_Data *data,uint8_t, uint8_t[]);
-void lcd_createChar_from_charmap(struct LiquidCrystal_I2C_Data *data,uint8_t location, const char *charmap);
+void lcd_init(LiquidCrystal_I2C_Data *data, uint8_t lcd_Addr,uint8_t lcd_cols,uint8_t lcd_rows, uint8_t fontsize);
+void lcd_begin(LiquidCrystal_I2C_Data *data, uint8_t cols, uint8_t lines, uint8_t dotsize);
+void lcd_clear(LiquidCrystal_I2C_Data *data);
+void lcd_home(LiquidCrystal_I2C_Data *data);
+void lcd_noDisplay(LiquidCrystal_I2C_Data *data);
+void lcd_display(LiquidCrystal_I2C_Data *data);
+void lcd_noBlink(LiquidCrystal_I2C_Data *data);
+void lcd_blink(LiquidCrystal_I2C_Data *data);
+void lcd_noCursor(LiquidCrystal_I2C_Data *data);
+void lcd_cursor(LiquidCrystal_I2C_Data *data);
+void lcd_scrollDisplayLeft(LiquidCrystal_I2C_Data *data);
+void lcd_scrollDisplayRight(LiquidCrystal_I2C_Data *data);
+void lcd_printLeft(LiquidCrystal_I2C_Data *data);
+void lcd_printRight(LiquidCrystal_I2C_Data *data);
+void lcd_leftToRight(LiquidCrystal_I2C_Data *data);
+void lcd_rightToLeft(LiquidCrystal_I2C_Data *data);
+void lcd_shiftIncrement(LiquidCrystal_I2C_Data *data);
+void lcd_shiftDecrement(LiquidCrystal_I2C_Data *data);
+void lcd_noBacklight(LiquidCrystal_I2C_Data *data);
+void lcd_backlight(LiquidCrystal_I2C_Data *data);
+void lcd_autoscroll(LiquidCrystal_I2C_Data *data);
+void lcd_noAutoscroll(LiquidCrystal_I2C_Data *data); 
+void lcd_createChar_from_uint8(LiquidCrystal_I2C_Data *data,uint8_t, uint8_t[]);
+void lcd_createChar_from_charmap(LiquidCrystal_I2C_Data *data,uint8_t location, const char *charmap);
 // Example: 	const char bell[8] PROGMEM = {B00100,B01110,B01110,B01110,B11111,B00000,B00100,B00000};
 
-void lcd_setCursor(struct LiquidCrystal_I2C_Data *data,uint8_t, uint8_t); 
-void lcd_write(struct LiquidCrystal_I2C_Data *data,uint8_t);
-void lcd_command(struct LiquidCrystal_I2C_Data *data,uint8_t);
-void lcd_oled_init(struct LiquidCrystal_I2C_Data *data);
+void lcd_setCursor(LiquidCrystal_I2C_Data *data,uint8_t, uint8_t); 
+void lcd_write(LiquidCrystal_I2C_Data *data,uint8_t);
+void lcd_command(LiquidCrystal_I2C_Data *data,uint8_t);
+void lcd_oled_init(LiquidCrystal_I2C_Data *data);
 
 ////compatibility API function aliases
-void lcd_blink_on(struct LiquidCrystal_I2C_Data *data);						// alias for blink(struct LiquidCrystal_I2C_Data *data)
-void lcd_blink_off(struct LiquidCrystal_I2C_Data *data);       					// alias for noBlink(struct LiquidCrystal_I2C_Data *data)
-void lcd_cursor_on(struct LiquidCrystal_I2C_Data *data);      	 					// alias for cursor(struct LiquidCrystal_I2C_Data *data)
-void lcd_cursor_off(struct LiquidCrystal_I2C_Data *data);      					// alias for noCursor(struct LiquidCrystal_I2C_Data *data)
-void lcd_setBacklight(struct LiquidCrystal_I2C_Data *data,uint8_t new_val);				// alias for backlight(struct LiquidCrystal_I2C_Data *data) and nobacklight(struct LiquidCrystal_I2C_Data *data)
-void lcd_load_custom_character(struct LiquidCrystal_I2C_Data *data,uint8_t char_num, uint8_t *rows);	// alias for createChar(struct LiquidCrystal_I2C_Data *data)
-void lcd_print(struct LiquidCrystal_I2C_Data *data,const char[]);
+void lcd_blink_on(LiquidCrystal_I2C_Data *data);						// alias for blink(LiquidCrystal_I2C_Data *data)
+void lcd_blink_off(LiquidCrystal_I2C_Data *data);       					// alias for noBlink(LiquidCrystal_I2C_Data *data)
+void lcd_cursor_on(LiquidCrystal_I2C_Data *data);      	 					// alias for cursor(LiquidCrystal_I2C_Data *data)
+void lcd_cursor_off(LiquidCrystal_I2C_Data *data);      					// alias for noCursor(LiquidCrystal_I2C_Data *data)
+void lcd_setBacklight(LiquidCrystal_I2C_Data *data,uint8_t new_val);				// alias for backlight(LiquidCrystal_I2C_Data *data) and nobacklight(LiquidCrystal_I2C_Data *data)
+void lcd_load_custom_character(LiquidCrystal_I2C_Data *data,uint8_t char_num, uint8_t *rows);	// alias for createChar(LiquidCrystal_I2C_Data *data)
+void lcd_print(LiquidCrystal_I2C_Data *data,const char[]);
 
-void _lcd_init_priv(struct LiquidCrystal_I2C_Data *data);
-void _lcd_send(struct LiquidCrystal_I2C_Data *data,uint8_t, uint8_t);
-void _lcd_write4bits(struct LiquidCrystal_I2C_Data *data,uint8_t);
-void _lcd_expanderWrite(struct LiquidCrystal_I2C_Data *data,uint8_t);
-void _lcd_pulseEnable(struct LiquidCrystal_I2C_Data *data,uint8_t);
+void _lcd_init_priv(LiquidCrystal_I2C_Data *data);
+void _lcd_send(LiquidCrystal_I2C_Data *data,uint8_t, uint8_t);
+void _lcd_write4bits(LiquidCrystal_I2C_Data *data,uint8_t);
+void _lcd_expanderWrite(LiquidCrystal_I2C_Data *data,uint8_t);
+void _lcd_pulseEnable(LiquidCrystal_I2C_Data *data,uint8_t);
 
 
 #endif
